@@ -33,14 +33,13 @@ int8_t set_pwms_duty(int8_t percent)
   percent = percent < 100 ? percent : 100;
   percent = percent >   0 ? percent : 1;
   u_int32_t fill = percent * max_pwm_value / 100;
-  ledcWrite(PWM1, fill);
-  ledcWrite(PWM2, fill);
+  ledcWriteChannel(PWM1, fill);
+  ledcWriteChannel(PWM2, fill);
   return percent;
 }
 
 void start_second_pwm(){
-  ledcSetup( PWM2, PWM_freq, PWM_RESOLUTION);
-  ledcAttachPin(PWM2_pin, PWM2);
+  ledcAttachChannel(PWM2_pin, PWM_freq, PWM_RESOLUTION, PWM2);
   detachInterrupt(digitalPinToInterrupt(PWM1_pin));
   pwms_started = true;
 }
@@ -126,9 +125,8 @@ void setup() {
   pinMode(PWM2_pin, OUTPUT);
   pinMode(FACTORY_BUTTON, INPUT);
 
-  ledcSetup(PWM1, PWM_freq, PWM_RESOLUTION);
-  ledcAttachPin(PWM1_pin, PWM1);
-  ledcWrite(PWM1, max_pwm_value);
+  ledcAttachChannel(PWM1_pin, PWM_freq, PWM_RESOLUTION, PWM1);
+  ledcWriteChannel(PWM1, max_pwm_value);
 
   delay(100);
   attachInterrupt(digitalPinToInterrupt(PWM1_pin), start_second_pwm, FALLING);
